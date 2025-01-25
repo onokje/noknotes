@@ -18,7 +18,7 @@ app.get('/app.js', (req, res) => {
     res.sendFile(join(__dirname, 'src/app.js'));
 });
 app.get('/api/notes', (req, res) => {
-    const notes = readdirSync(join(__dirname, 'notes')).map(note => note.slice(0, -3));
+    const notes = readdirSync(join(__dirname, 'notes')).filter(note => note.endsWith('.md')).map(note => note.slice(0, -3));
 
     res.send({notes});
 })
