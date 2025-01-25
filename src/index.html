@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>NokNotes</title>
+    <style>
+        html {
+            height: 100%;
+            background: #111;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100%;
+        }
+        #sidebar {
+
+            width: 300px;
+            background: #333;
+        }
+        textarea {
+            background: #222;
+        }
+
+    </style>
+</head>
+<body>
+<div id="sidebar">
+    <div><button type="button">New Note</button></div>
+    <ul id="notes"></ul>
+</div>
+
+<div>
+    <textarea id="main_editor"></textarea>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
