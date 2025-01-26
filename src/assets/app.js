@@ -55,7 +55,7 @@ async function getNotes() {
 }
 
 function findNoteMenuElementByNoteName(noteName) {
-    return document.querySelector('[data-note='+noteName+']')
+    return document.querySelector('[data-note="'+noteName+'"]')
 }
 
 async function selectNote(noteName) {
