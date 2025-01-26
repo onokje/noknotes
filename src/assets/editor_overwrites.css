@@ -1,0 +1,31 @@
+.EasyMDEContainer {
+    background-color: var(--bg-base-100) !important;
+}
+
+.CodeMirror, .editor-preview {
+    color: white !important;
+    border-color: #757575 !important;
+    background-color: var(--bg-base-100) !important;
+}
+
+.cm-s-easymde .CodeMirror-cursor {
+    border-color: #757575 !important;
+}
+
+.editor-toolbar{
+    background-color: var(--bg-base-100) !important;
+    border: none;
+}
+
+.editor-toolbar button i {
+    color: white !important;
+}
+
+.editor-toolbar button.active, .editor-toolbar button:hover {
+    background-color: blue !important; // Fixes toolbar buttons from appearing as white when hovered or selected
+}
+
+.editor-preview pre {
+    background-color: #333 !important; // This fixes code blocks in Markdown appearing with a white background
+}
+

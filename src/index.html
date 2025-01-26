@@ -3,46 +3,29 @@
 <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>NokNotes</title>
-    <style>
-        html {
-            height: 100%;
-            background: #111;
-        }
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            height: 100%;
-        }
-        #sidebar {
-
-            width: 300px;
-            background: #333;
-        }
-        #main{
-            width: 100%;
-
-        }
-        textarea {
-            box-sizing: border-box;
-            background: #222;
-            width: 100%;
-            border: 0;
-        }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="assets/editor.css">
+    <link rel="stylesheet" type="text/css" href="assets/app.css">
+    <link rel="stylesheet" type="text/css" href="assets/editor_overwrites.css">
 </head>
 <body>
 <div id="sidebar">
-    <div><button type="button">New Note</button></div>
+    <h1>NokNotes</h1>
+    <div id="newNoteContainer">
+        <b>New Note:</b>
+        <div>
+            <input type="text" id="newNoteImput"/>
+            <button type="button">save</button>
+        </div>
+
+    </div>
     <ul id="notes"></ul>
 </div>
 
 <div id="main">
-    <textarea id="main_editor"></textarea>
+    <div id="main_editor_container"></div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/app.js"></script>
+<script src="assets/app.js"></script>
 </body>
 </html>
