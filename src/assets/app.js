@@ -1,5 +1,7 @@
 const socket = io();
 const $notes = document.getElementById('notes');
+const $newNoteInput = document.getElementById('newNoteInput');
+const $newNoteSaveBtn = document.getElementById('newNoteSaveBtn');
 let selectedNote = null;
 let typingTimeout;
 let easyMDE;
@@ -79,6 +81,14 @@ async function selectNote(noteName, targetElement) {
     }
 }
 
+socket.on('noteAdded', (msg) => {
+    const $noteEl = document.createElement('li');
+    $noteEl.innerHTML = msg.noteName;
+    $noteEl.setAttribute('data-note', msg.noteName);
+    $notes.appendChild($noteEl);
+    selectNote(msg.noteName, $noteEl);
+})
+
 $notes.addEventListener('click', (e) => {
     e.preventDefault();
     if (e.target.nodeName === 'LI') {
@@ -86,6 +96,15 @@ $notes.addEventListener('click', (e) => {
         selectNote(targetNoteName, e.target);
     }
 
+});
+
+$newNoteSaveBtn.addEventListener('click', (e) => {
+    const newNoteName = $newNoteInput.value;
+    if (!newNoteName || newNoteName === "") {
+        return;
+    }
+    socket.emit('newNote', {noteName: newNoteName});
+    $newNoteInput.value = '';
 });
 
 getNotes();
