@@ -2,6 +2,9 @@ const socket = io();
 const $notes = document.getElementById('notes');
 const $newNoteInput = document.getElementById('newNoteInput');
 const $newNoteSaveBtn = document.getElementById('newNoteSaveBtn');
+const $topbar = document.getElementById('topbar');
+const $deleteNoteBtn = document.getElementById('deleteNoteBtn');
+
 let selectedNote = null;
 let typingTimeout;
 let easyMDE;
@@ -11,7 +14,9 @@ function setupEditor() {
     if (!$editor) {
         $editor = document.createElement('textarea');
         $editor.setAttribute('id', 'main_editor');
-        document.getElementById('main_editor_container').appendChild($editor);
+        const $container = document.getElementById('main_editor_container');
+        $container.innerHTML = '';
+        $container.appendChild($editor);
 
         easyMDE = new EasyMDE({
             element: $editor,
@@ -49,11 +54,19 @@ async function getNotes() {
     }
 }
 
-async function selectNote(noteName, targetElement) {
-    if (!noteName || noteName === '' || noteName === selectedNote) {
+function findNoteMenuElementByNoteName(noteName) {
+    return document.querySelector('[data-note='+noteName+']')
+}
+
+async function selectNote(noteName) {
+    if (noteName === selectedNote) {
         return;
     }
-
+    if (!noteName || noteName === "") {
+        // select first note in the list
+        const $firstNote = $notes.getElementsByTagName('li')[0];
+        noteName = $firstNote.innerHTML;
+    }
 
     try {
         const response = await fetch(`/api/note/${noteName}`);
@@ -62,40 +75,50 @@ async function selectNote(noteName, targetElement) {
         }
 
         const noteDataMD = await response.text();
-
-
         if (selectedNote) {
-            const currentSelectedNoteElement = document.querySelector('[data-note='+selectedNote+']');
+            const currentSelectedNoteElement = findNoteMenuElementByNoteName(selectedNote);
             if (currentSelectedNoteElement) {
                 currentSelectedNoteElement.classList.remove("active");
             }
         }
 
         selectedNote = noteName;
-        targetElement.classList.add("active");
+        findNoteMenuElementByNoteName(noteName).classList.add("active");
         setupEditor();
         easyMDE.value(noteDataMD);
+        $topbar.getElementsByTagName('span')[0].innerHTML = noteName;
 
     } catch (error) {
         console.error(error.message);
     }
 }
 
-socket.on('noteAdded', (msg) => {
-    const $noteEl = document.createElement('li');
-    $noteEl.innerHTML = msg.noteName;
-    $noteEl.setAttribute('data-note', msg.noteName);
-    $notes.appendChild($noteEl);
-    selectNote(msg.noteName, $noteEl);
+socket.on('notesUpdated', (msg) => {
+    getNotes().then(() => {
+        if (msg.action === 'noteAdded') {
+            selectNote(msg.noteName);
+        }
+        if (msg.action === 'noteDeleted') {
+            selectNote();
+        }
+    });
 })
 
 $notes.addEventListener('click', (e) => {
     e.preventDefault();
     if (e.target.nodeName === 'LI') {
         const targetNoteName = e.target.innerHTML;
-        selectNote(targetNoteName, e.target);
+        selectNote(targetNoteName);
     }
+});
 
+$deleteNoteBtn.addEventListener('click', (e) => {
+    if (!selectedNote) {
+        return;
+    }
+    if (confirm(`Remove note named ${selectedNote}, are you sure?`)) {
+        socket.emit('deleteNote', {noteName: selectedNote});
+    }
 });
 
 $newNoteSaveBtn.addEventListener('click', (e) => {

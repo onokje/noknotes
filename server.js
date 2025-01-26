@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, existsSync, unlinkSync } from 'node:fs';
 import { Server } from 'socket.io';
 
 const app = express();
@@ -32,16 +32,19 @@ io.on('connection', (socket) => {
     //
     // });
     socket.on('saveNote', (msg) => {
-        console.log('Incoming saveNote: ' + msg.noteName);
         if (existsSync(join(notesDir, `${msg.noteName}.md`))) {
             writeFileSync(join(notesDir, `${msg.noteName}.md`), msg.noteContents);
             io.emit('noteSaved', msg);
         }
     });
     socket.on('newNote', (msg) => {
-        console.log('Incoming newNote: ' + msg.noteName);
         writeFileSync(join(notesDir, `${msg.noteName}.md`), '');
-        io.emit('noteAdded', msg);
+        io.emit('notesUpdated', {action: 'noteAdded', noteName: msg.noteName});
+    });
+    socket.on('deleteNote', (msg) => {
+        console.log('incomeing delete');
+        unlinkSync(join(notesDir, `${msg.noteName}.md`));
+        io.emit('notesUpdated', {action: 'noteDeleted'});
     });
 });
 

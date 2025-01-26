@@ -22,7 +22,11 @@
 </div>
 
 <div id="main">
-    <div id="main_editor_container"></div>
+    <div id="topbar">
+        <span></span>
+        <div><button type="button" id="deleteNoteBtn">Delete note</button></div>
+    </div>
+    <div id="main_editor_container"><div class="nothingSelected">No note selected. Select a note or create a new one.</div></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
