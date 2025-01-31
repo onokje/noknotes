@@ -1,0 +1,55 @@
+@use "vars" as *;
+@use "colors";
+@use "editor_overwrites";
+@use "sidebar";
+
+
+html {
+    height: 100%;
+    background-color: var(--bg-base-100);
+    color: var(--fg-base-100);
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    display: flex;
+    height: 100%;
+}
+
+#main{
+    width: 100%;
+    display: none;
+    @media screen and ($bp1) {
+        display: block;
+    }
+}
+
+
+#topbar {
+    background-color: var(--bg-base-200);
+    height: 48px;
+    display: flex;
+    justify-content: space-between;
+    span {
+        font-size: 24px;
+        font-weight: bold;
+        padding: 10px;
+    }
+    button {
+        margin: 5px;
+        padding: 5px 20px;
+        font-size: 18px;
+        background-color: var(--bg-base-100);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+}
+
+
+
+div.nothingSelected {
+    font-size: 24px;
+    text-align: center;
+}

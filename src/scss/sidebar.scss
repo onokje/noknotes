@@ -1,0 +1,62 @@
+@use "vars" as *;
+
+#sidebar {
+    background-color: var(--bg-base-200);
+    width: 100%;
+    @media screen and ($bp1) {
+        width: 400px;
+    }
+
+    h1 {
+        font-size: 24px;
+        text-align: center;
+    }
+}
+
+#newNoteContainer {
+    padding: 5px;
+    margin: 10px;
+    border-radius: 5px;
+    background-color: var(--bg-base-100);
+    div {
+        display: flex;
+        margin-top: 5px;
+    }
+    input {
+        width: 80%;
+        padding: 5px;
+        font-size: 18px;
+        border: solid 1px var(--fg-base-300);
+        border-radius: 5px;
+    }
+    button {
+        padding: 5px 20px;
+        font-size: 18px;
+        background-color: var(--bg-primary);
+        border: none;
+        border-radius: 5px;
+        margin-left: 5px;
+        cursor: pointer;
+    }
+}
+
+
+#notes {
+    padding: 5px;
+    margin: 10px;
+    border-radius: 5px;
+    background-color: var(--bg-base-100);
+    li {
+        display: block;
+        margin: 5px 5px 10px;
+        background-color: var(--bg-base-200);
+        color: var(--fg-base-200);
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        &.active {
+            background-color: #334;
+        }
+    }
+}

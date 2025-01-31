@@ -13,9 +13,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const notesDir = process.env.NOTE_DIR ?? join(__dirname, 'notes');
 
 app.get('/', (req, res) => {
-    res.sendFile(join(__dirname, 'src/index.html'));
+    res.sendFile(join(__dirname, 'dist/index.html'));
 });
-app.use('/assets', express.static('src/assets'))
+app.use('/dist', express.static('dist'))
 app.get('/api/notes', (req, res) => {
     const notes = readdirSync(notesDir).filter(note => note.endsWith('.md')).map(note => note.slice(0, -3));
 
