@@ -42,12 +42,13 @@ async function selectNote(noteName) {
     try {
         const noteDataMD =  await getNoteData(noteName);
         clearActiveClassFromNotes();
-
+        showEditor();
         selectedNote = noteName;
         findNoteMenuElementByNoteName(noteName).classList.add("active");
         setupEditor();
         easyMDE.value(noteDataMD);
-        setNoteNameOnTopBar(noteName)
+        setNoteNameOnTopBar(noteName);
+        collapseSideBar();
 
     } catch (error) {
         console.error(error.message);
@@ -86,6 +87,7 @@ function attachListeners() {
     const $newNoteInput = document.getElementById('newNoteInput');
     const $newNoteSaveBtn = document.getElementById('newNoteSaveBtn');
     const $deleteNoteBtn = document.getElementById('deleteNoteBtn');
+    const $showNoteListBtn = document.getElementById('showNoteListBtn');
 
     $notes.addEventListener('click', (e) => {
         e.preventDefault();
@@ -110,6 +112,38 @@ function attachListeners() {
         sendNewNoteEvent(newNoteName);
         $newNoteInput.value = '';
     });
+
+    $showNoteListBtn.addEventListener('click', (e) => {
+        showSideBar();
+        hideEditor();
+    });
 }
 
-export {findNoteMenuElementByNoteName, findFirstNoteNameByFirstNoteElement, clearActiveClassFromNotes, renderNotes, attachListeners, selectNote}
+function collapseSideBar() {
+    const $sidebar = document.getElementById("sidebar");
+    $sidebar.classList.add('collapse');
+}
+
+function showSideBar() {
+    const $sidebar = document.getElementById("sidebar");
+    $sidebar.classList.remove('collapse');
+}
+
+function hideEditor() {
+    const $main = document.getElementById("main");
+    $main.classList.add('collapse');
+}
+
+function showEditor() {
+    const $main = document.getElementById("main");
+    $main.classList.remove('collapse');
+}
+
+export {
+    findNoteMenuElementByNoteName,
+    findFirstNoteNameByFirstNoteElement,
+    clearActiveClassFromNotes,
+    renderNotes,
+    attachListeners,
+    selectNote
+}

@@ -19,18 +19,31 @@ body {
 
 #main{
     width: 100%;
-    display: none;
-    @media screen and ($bp1) {
-        display: block;
+    &.collapse {
+        display: none;
+        @media screen and ($bp1) {
+            display: block;
+        }
     }
 }
-
 
 #topbar {
     background-color: var(--bg-base-200);
     height: 48px;
     display: flex;
     justify-content: space-between;
+    #showNoteListBtn{
+
+        border: solid 1px var(--fg-base-300);
+        padding: 6px 15px;
+        margin: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        @media screen and ($bp1) {
+            display: none;
+
+        }
+    }
     span {
         font-size: 24px;
         font-weight: bold;

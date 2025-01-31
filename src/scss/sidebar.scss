@@ -11,6 +11,13 @@
         font-size: 24px;
         text-align: center;
     }
+
+    &.collapse {
+        display: none;
+        @media screen and ($bp1) {
+            display: block;
+        }
+    }
 }
 
 #newNoteContainer {
