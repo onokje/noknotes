@@ -3,6 +3,7 @@ import {fileURLToPath} from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default {
+    mode: 'production',
     entry: './src/js/index.js',
     output: {
         filename: 'app.js',
