@@ -11,6 +11,7 @@ const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const notesDir = process.env.NOTE_DIR ?? join(__dirname, 'notes');
+const port = process.env.SERVER_PORT ?? 3000;
 
 app.get('/', (req, res) => {
     res.sendFile(join(__dirname, 'dist/index.html'));
@@ -48,7 +49,6 @@ io.on('connection', (socket) => {
     });
 });
 
-const port = 3000;
 
 try {
     server.listen(port, () => {
