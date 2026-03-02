@@ -27,6 +27,8 @@ function isValidName(name) {
     return typeof name === 'string' && name.length > 0 && name.length <= 50 && NAME_REGEX.test(name);
 }
 
+app.set('trust proxy', 1);
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const notesDir = process.env.NOTE_DIR ?? join(__dirname, 'notes');
 const port = process.env.SERVER_PORT ?? 3000;
