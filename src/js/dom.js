@@ -1,5 +1,5 @@
 import {getNoteData, saveNote, sendDeleteNoteEvent, sendNewNoteEvent, sendRenameNoteEvent} from "./api.js";
-import {selectedNote, easyMDE, typingTimeout} from "./state.js";
+import {getSelectedNote, setSelectedNote, getEasyMDE, setEasyMDE, getTypingTimeout, setTypingTimeout} from "./state.js";
 
 function findNoteMenuElementByNoteName(noteName) {
     return document.querySelector('[data-note="'+noteName+'"]')
@@ -8,7 +8,7 @@ function findNoteMenuElementByNoteName(noteName) {
 function findFirstNoteNameByFirstNoteElement() {
     const $notes = document.getElementById('notes');
     const $firstNote = $notes.getElementsByTagName('li')[0];
-    return $firstNote.innerHTML;
+    return $firstNote.textContent;
 }
 
 function clearActiveClassFromNotes() {
@@ -23,7 +23,7 @@ function renderNotes(notes) {
     if (Array.isArray(notes)) {
         notes.forEach((note) => {
             const $noteEl = document.createElement('li');
-            $noteEl.innerHTML = note;
+            $noteEl.textContent = note;
             $noteEl.setAttribute('data-note', note);
             $notes.appendChild($noteEl);
         })
@@ -31,7 +31,7 @@ function renderNotes(notes) {
 }
 
 async function selectNote(noteName) {
-    if (noteName === selectedNote) {
+    if (noteName === getSelectedNote()) {
         return;
     }
     if (!noteName || noteName === "") {
@@ -43,10 +43,10 @@ async function selectNote(noteName) {
         const noteDataMD =  await getNoteData(noteName);
         clearActiveClassFromNotes();
         showEditor();
-        selectedNote = noteName;
+        setSelectedNote(noteName);
         findNoteMenuElementByNoteName(noteName).classList.add("active");
         setupEditor();
-        easyMDE.value(noteDataMD);
+        getEasyMDE().value(noteDataMD);
         setNoteNameOnTopBar(noteName);
         collapseSideBar();
 
@@ -62,7 +62,7 @@ function setNoteNameOnTopBar(noteName) {
 
 function enterRenameMode() {
     const input = document.getElementById('renameNoteInput');
-    input.value = selectedNote;
+    input.value = getSelectedNote();
     document.getElementById('noteName').classList.add('hidden');
     document.getElementById('renameNoteBtn').classList.add('hidden');
     input.classList.remove('hidden');
@@ -85,8 +85,8 @@ function doRename() {
         alert('Invalid note name. Use only letters, numbers, spaces, hyphens, or underscores (max 50 characters).');
         return;
     }
-    if (newName === selectedNote) { exitRenameMode(); return; }
-    sendRenameNoteEvent(selectedNote, newName);
+    if (newName === getSelectedNote()) { exitRenameMode(); return; }
+    sendRenameNoteEvent(getSelectedNote(), newName);
     exitRenameMode();
 }
 
@@ -99,15 +99,15 @@ function setupEditor() {
         $container.innerHTML = '';
         $container.appendChild($editor);
 
-        easyMDE = new EasyMDE({
+        setEasyMDE(new EasyMDE({
             element: $editor,
             spellChecker: false
-        });
-        easyMDE.codemirror.on("change", () => {
-            clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => {
-                saveNote(selectedNote, easyMDE.value());
-            }, 400);
+        }));
+        getEasyMDE().codemirror.on("change", () => {
+            clearTimeout(getTypingTimeout());
+            setTypingTimeout(setTimeout(() => {
+                saveNote(getSelectedNote(), getEasyMDE().value());
+            }, 400));
         });
     }
 }
@@ -122,21 +122,23 @@ function attachListeners() {
     $notes.addEventListener('click', (e) => {
         e.preventDefault();
         if (e.target.nodeName === 'LI') {
-            const targetNoteName = e.target.innerHTML;
+            const targetNoteName = e.target.textContent;
             selectNote(targetNoteName);
         }
     });
 
     $deleteNoteBtn.addEventListener('click', (e) => {
-        if (!selectedNote) {
+        if (!getSelectedNote()) {
             return;
         }
-        sendDeleteNoteEvent(selectedNote);
+        sendDeleteNoteEvent(getSelectedNote());
     });
 
     $newNoteSaveBtn.addEventListener('click', (e) => {
-        const newNoteName = $newNoteInput.value;
-        if (!newNoteName || newNoteName === "") {
+        const newNoteName = $newNoteInput.value.trim();
+        const nameRegex = /^[a-zA-Z0-9 _-]+$/;
+        if (!newNoteName || newNoteName.length > 50 || !nameRegex.test(newNoteName)) {
+            alert('Invalid note name. Use only letters, numbers, spaces, hyphens, or underscores (max 50 characters).');
             return;
         }
         sendNewNoteEvent(newNoteName);
@@ -153,7 +155,7 @@ function attachListeners() {
     const $renameNoteInput = document.getElementById('renameNoteInput');
 
     $renameNoteBtn.addEventListener('click', () => {
-        if (!selectedNote) return;
+        if (!getSelectedNote()) return;
         enterRenameMode();
     });
 

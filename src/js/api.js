@@ -1,6 +1,10 @@
 import {renderNotes, selectNote} from "./dom.js";
 
 const socket = io();
+socket.on('operationError', (msg) => {
+    console.error('Server error:', msg.message);
+    alert(`Error: ${msg.message}`);
+});
 socket.on('notesUpdated', (msg) => {
     getNotes().then(() => {
         if (msg.action === 'noteAdded') {
@@ -31,7 +35,7 @@ function sendDeleteNoteEvent(noteName) {
 
 async function getNoteData(noteName) {
     try {
-        const response = await fetch(`/api/note/${noteName}`);
+        const response = await fetch(`/api/note/${encodeURIComponent(noteName)}`);
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }

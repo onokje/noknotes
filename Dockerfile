@@ -7,7 +7,6 @@ COPY package*.json ./
 COPY webpack.config.js ./
 COPY src src
 COPY dist dist
-ENV NODE_ENV development
 RUN npm ci && npm run build
 
 
@@ -20,6 +19,7 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY server.js server.js
 COPY --from=base /usr/src/app/dist dist
 RUN mkdir /notes
+ENV NODE_ENV production
 ENV NOTE_DIR /notes
 
 EXPOSE 3000
