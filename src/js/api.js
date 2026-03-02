@@ -9,6 +9,9 @@ socket.on('notesUpdated', (msg) => {
         if (msg.action === 'noteDeleted') {
             selectNote();
         }
+        if (msg.action === 'noteRenamed') {
+            selectNote(msg.newName);
+        }
     });
 })
 
@@ -54,4 +57,8 @@ async function getNotes() {
     }
 }
 
-export {getNotes, getNoteData, sendNewNoteEvent, sendDeleteNoteEvent, saveNote};
+function sendRenameNoteEvent(oldName, newName) {
+    socket.emit('renameNote', { oldName, newName });
+}
+
+export {getNotes, getNoteData, sendNewNoteEvent, sendDeleteNoteEvent, saveNote, sendRenameNoteEvent};

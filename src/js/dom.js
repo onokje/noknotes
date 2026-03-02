@@ -1,4 +1,4 @@
-import {getNoteData, saveNote, sendDeleteNoteEvent, sendNewNoteEvent} from "./api.js";
+import {getNoteData, saveNote, sendDeleteNoteEvent, sendNewNoteEvent, sendRenameNoteEvent} from "./api.js";
 import {selectedNote, easyMDE, typingTimeout} from "./state.js";
 
 function findNoteMenuElementByNoteName(noteName) {
@@ -56,8 +56,38 @@ async function selectNote(noteName) {
 }
 
 function setNoteNameOnTopBar(noteName) {
-    const $topbar = document.getElementById("topbar")
-    $topbar.getElementsByTagName('span')[0].innerHTML = noteName;
+    document.getElementById('noteName').textContent = noteName;
+    document.getElementById('renameNoteBtn').classList.remove('hidden');
+}
+
+function enterRenameMode() {
+    const input = document.getElementById('renameNoteInput');
+    input.value = selectedNote;
+    document.getElementById('noteName').classList.add('hidden');
+    document.getElementById('renameNoteBtn').classList.add('hidden');
+    input.classList.remove('hidden');
+    document.getElementById('renameNoteSaveBtn').classList.remove('hidden');
+    input.focus();
+    input.select();
+}
+
+function exitRenameMode() {
+    document.getElementById('noteName').classList.remove('hidden');
+    document.getElementById('renameNoteBtn').classList.remove('hidden');
+    document.getElementById('renameNoteInput').classList.add('hidden');
+    document.getElementById('renameNoteSaveBtn').classList.add('hidden');
+}
+
+function doRename() {
+    const newName = document.getElementById('renameNoteInput').value.trim();
+    const nameRegex = /^[a-zA-Z0-9 _-]+$/;
+    if (!newName || newName.length > 50 || !nameRegex.test(newName)) {
+        alert('Invalid note name. Use only letters, numbers, spaces, hyphens, or underscores (max 50 characters).');
+        return;
+    }
+    if (newName === selectedNote) { exitRenameMode(); return; }
+    sendRenameNoteEvent(selectedNote, newName);
+    exitRenameMode();
 }
 
 function setupEditor() {
@@ -116,6 +146,22 @@ function attachListeners() {
     $showNoteListBtn.addEventListener('click', (e) => {
         showSideBar();
         hideEditor();
+    });
+
+    const $renameNoteBtn = document.getElementById('renameNoteBtn');
+    const $renameNoteSaveBtn = document.getElementById('renameNoteSaveBtn');
+    const $renameNoteInput = document.getElementById('renameNoteInput');
+
+    $renameNoteBtn.addEventListener('click', () => {
+        if (!selectedNote) return;
+        enterRenameMode();
+    });
+
+    $renameNoteSaveBtn.addEventListener('click', doRename);
+
+    $renameNoteInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') doRename();
+        if (e.key === 'Escape') exitRenameMode();
     });
 }
 

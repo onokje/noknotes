@@ -22,7 +22,12 @@
 <div id="main" class="collapse">
     <div id="topbar">
         <div id="showNoteListBtn">«</div>
-        <span></span>
+        <div id="titleArea">
+            <span id="noteName"></span>
+            <button type="button" id="renameNoteBtn" title="Rename note" class="hidden">✎</button>
+            <input type="text" id="renameNoteInput" maxlength="50" class="hidden" />
+            <button type="button" id="renameNoteSaveBtn" class="hidden">save</button>
+        </div>
         <div><button type="button" id="deleteNoteBtn">Delete note</button></div>
     </div>
     <div id="main_editor_container"><div class="nothingSelected">No note selected. Select a note or create a new one.</div></div>

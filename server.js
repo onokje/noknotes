@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { readdirSync, readFileSync, writeFileSync, existsSync, unlinkSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, existsSync, unlinkSync, renameSync } from 'node:fs';
 import { Server } from 'socket.io';
 
 const app = express();
@@ -46,6 +46,16 @@ io.on('connection', (socket) => {
         console.log('incomeing delete');
         unlinkSync(join(notesDir, `${msg.noteName}.md`));
         io.emit('notesUpdated', {action: 'noteDeleted'});
+    });
+    socket.on('renameNote', (msg) => {
+        const { oldName, newName } = msg;
+        const nameRegex = /^[a-zA-Z0-9 _-]+$/;
+        if (!newName || newName.length > 50 || !nameRegex.test(newName)) return;
+        const oldPath = join(notesDir, `${oldName}.md`);
+        const newPath = join(notesDir, `${newName}.md`);
+        if (!existsSync(oldPath) || existsSync(newPath)) return;
+        renameSync(oldPath, newPath);
+        io.emit('notesUpdated', { action: 'noteRenamed', oldName, newName });
     });
 });
 
