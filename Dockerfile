@@ -1,4 +1,4 @@
-FROM node:22-alpine as base
+FROM node:24-alpine as base
 LABEL authors="onok"
 
 WORKDIR /usr/src/app
@@ -11,7 +11,7 @@ ENV NODE_ENV development
 RUN npm ci && npm run build
 
 
-FROM node:22-alpine as runtime
+FROM node:24-alpine as runtime
 WORKDIR /usr/src/app
 
 COPY package*.json ./
