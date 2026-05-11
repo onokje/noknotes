@@ -11,6 +11,8 @@ RUN npm ci && npm run build
 
 
 FROM node:24-alpine AS runtime
+LABEL authors="onok"
+LABEL org.opencontainers.image.source="https://github.com/onokje/noknotes"
 WORKDIR /usr/src/app
 
 COPY package*.json ./
