@@ -18,7 +18,9 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
-COPY server.js server.js cli.js db.js
+COPY server.js server.js
+COPY cli.js cli.js
+COPY db.js db.js
 COPY --from=base /usr/src/app/dist dist
 RUN mkdir /notes
 ENV NODE_ENV=production
