@@ -7,9 +7,32 @@
         width: 400px;
     }
 
-    h1 {
-        font-size: 24px;
-        text-align: center;
+    #sidebarHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px 10px 0;
+
+        h1 {
+            font-size: 24px;
+        }
+
+        #sidebarActions {
+            display: flex;
+            gap: 6px;
+
+            button {
+                font-size: 13px;
+                padding: 4px 10px;
+                background: transparent;
+                border: 1px solid var(--fg-base-300);
+                border-radius: 4px;
+                cursor: pointer;
+                opacity: 0.7;
+                &:hover:not(:disabled) { opacity: 1; }
+                &:disabled { opacity: 0.4; cursor: default; }
+            }
+        }
     }
 
     &.collapse {

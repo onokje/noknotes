@@ -1,10 +1,16 @@
 import {renderNotes, selectNote} from "./dom.js";
 
 const socket = io();
+
+socket.on('connect_error', (err) => {
+    if (err.message === 'Unauthorized') location.href = '/login';
+});
+
 socket.on('operationError', (msg) => {
     console.error('Server error:', msg.message);
     alert(`Error: ${msg.message}`);
 });
+
 socket.on('notesUpdated', (msg) => {
     getNotes().then(() => {
         if (msg.action === 'noteAdded') {
@@ -17,7 +23,7 @@ socket.on('notesUpdated', (msg) => {
             selectNote(msg.newName);
         }
     });
-})
+});
 
 function saveNote(noteName, noteContents) {
     socket.emit('saveNote', {noteName, noteContents});
@@ -36,9 +42,8 @@ function sendDeleteNoteEvent(noteName) {
 async function getNoteData(noteName) {
     try {
         const response = await fetch(`/api/note/${encodeURIComponent(noteName)}`);
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
+        if (response.status === 401) { location.href = '/login'; return; }
+        if (!response.ok) throw new Error(`Response status: ${response.status}`);
         return await response.text();
     } catch (error) {
         console.error(error.message);
@@ -46,16 +51,12 @@ async function getNoteData(noteName) {
 }
 
 async function getNotes() {
-    const $notes = document.getElementById('notes');
     try {
         const response = await fetch("/api/notes");
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
-
+        if (response.status === 401) { location.href = '/login'; return; }
+        if (!response.ok) throw new Error(`Response status: ${response.status}`);
         const data = await response.json();
         renderNotes(data.notes);
-
     } catch (error) {
         console.error(error.message);
     }
@@ -65,4 +66,9 @@ function sendRenameNoteEvent(oldName, newName) {
     socket.emit('renameNote', { oldName, newName });
 }
 
-export {getNotes, getNoteData, sendNewNoteEvent, sendDeleteNoteEvent, saveNote, sendRenameNoteEvent};
+async function logout() {
+    await fetch('/api/logout', { method: 'POST' });
+    location.href = '/login';
+}
+
+export {getNotes, getNoteData, sendNewNoteEvent, sendDeleteNoteEvent, saveNote, sendRenameNoteEvent, logout};

@@ -7,7 +7,13 @@
 </head>
 <body>
 <div id="sidebar">
-    <h1>NokNotes</h1>
+    <div id="sidebarHeader">
+        <h1>NokNotes</h1>
+        <div id="sidebarActions">
+            <button type="button" id="addPasskeyBtn" title="Add a passkey to your account">Add passkey</button>
+            <button type="button" id="logoutBtn" title="Sign out">Sign out</button>
+        </div>
+    </div>
     <div id="newNoteContainer">
         <b>New Note:</b>
         <div>
@@ -33,6 +39,7 @@
     <div id="main_editor_container"><div class="nothingSelected">No note selected. Select a note or create a new one.</div></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js" integrity="sha384-KtB38COewxfrhJxoN2d+olxJAeT08LF8cVZ6DQ8Poqu89zIptqO6zAXoIxpGNWYE" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@13/dist/bundle/index.umd.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="dist/app.js"></script>
 </body>

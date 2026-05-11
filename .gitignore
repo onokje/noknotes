@@ -6,3 +6,5 @@ notes/
 .env.local
 *.log
 .DS_Store
+
+users.db

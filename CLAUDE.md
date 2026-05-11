@@ -40,10 +40,10 @@ NokNotes is a self-hosted markdown note-taking app. Notes are stored as `.md` fi
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SERVER_PORT` | `3000` | HTTP server port |
-| `NOTE_DIR` | `./notes` | Directory where `.md` files are stored |
+| Variable      | Default   | Description                            |
+|---------------|-----------|----------------------------------------|
+| `SERVER_PORT` | `3000`    | HTTP server port                       |
+| `NOTE_DIR`    | `./notes` | Directory where `.md` files are stored |
 
 ## Key Conventions
 
