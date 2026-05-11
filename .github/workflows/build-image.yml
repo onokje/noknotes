@@ -46,21 +46,3 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:latest
           labels: ${{ steps.meta.outputs.labels }}
 
-  deploy:
-    name: Deploy to production (Komodo)
-    runs-on: ubuntu-latest
-    needs: build-and-push-image
-    steps:
-      - name: Trigger Komodo stack deploy
-        run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" \
-            -X POST https://komodo.onok.eu/execute/DeployStack \
-            -H "Content-Type: application/json" \
-            -H "X-Api-Key: ${{ secrets.KOMODO_API_KEY }}" \
-            -H "X-Api-Secret: ${{ secrets.KOMODO_API_SECRET }}" \
-            -d '{"stack": "noknotes"}')
-          echo "Komodo API response: $response"
-          if [ "$response" -lt 200 ] || [ "$response" -ge 300 ]; then
-            echo "Deploy failed with HTTP $response"
-            exit 1
-          fi
